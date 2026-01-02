@@ -1,7 +1,6 @@
 
 import React, { useState, createContext, useContext } from 'react';
-/* Changed HashRouter to BrowserRouter and ensured standard named exports for Routes and Route */
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -39,7 +38,6 @@ const App: React.FC = () => {
                 <Route path="/portfolio" element={<Portfolio />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
-                {/* Fallback for 404 */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Target, Lightbulb, Users, Award, Rocket, Zap, ShieldCheck, Heart, Code2, Flame, FastForward, CheckCircle2, RefreshCcw, Layers, Scale, Coffee } from 'lucide-react';
+import { Target, Lightbulb, Users, Award, Rocket, Zap, ShieldCheck, Heart, Code2, Flame, FastForward, CheckCircle2, RefreshCcw, Layers, Scale, Coffee, Sparkles } from 'lucide-react';
 import NewcastleMap from '../components/NewcastleMap';
+import LiveConsultant from '../components/LiveConsultant';
 
 const About: React.FC = () => {
   return (
@@ -45,7 +46,32 @@ const About: React.FC = () => {
         </div>
       </section>
 
-      {/* NEW: Newcastle Tech Map Section */}
+      {/* Live AI Feature */}
+      <section className="container mx-auto max-w-6xl mb-20 md:mb-32">
+        <div className="grid lg:grid-cols-2 gap-12 items-center bg-blue-600/5 rounded-[3rem] p-8 md:p-16 border border-blue-500/10">
+          <div>
+            <div className="inline-flex items-center space-x-2 px-3 py-1 bg-blue-600/20 border border-blue-500/30 rounded-full mb-6">
+              <Sparkles className="w-3 h-3 text-blue-400" />
+              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Real-Time Interaction</span>
+            </div>
+            <h3 className="text-3xl md:text-5xl font-black text-white mb-6">Talk to our <span className="text-gradient">AI Founder</span></h3>
+            <p className="text-slate-400 text-sm md:text-lg mb-8 font-medium leading-relaxed">
+              Experience the future of digital consulting. Launch a voice session with our AI-cloned founder to discuss your project requirements or our studio philosophy.
+            </p>
+            <ul className="space-y-4 mb-8">
+              {['Instant Strategy Response', 'Voice-to-Voice Clarity', 'Bilingual (EN/ZU) Support'].map((feat, i) => (
+                <li key={i} className="flex items-center space-x-3 text-slate-300 font-bold text-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                  <span>{feat}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <LiveConsultant />
+        </div>
+      </section>
+
+      {/* Newcastle Tech Map Section */}
       <section className="container mx-auto max-w-6xl mb-20 md:mb-32 px-4 md:px-0">
         <div className="text-center mb-12">
           <h2 className="text-blue-500 font-black text-[10px] md:text-sm uppercase tracking-[0.3em] mb-4">Our Territory</h2>
