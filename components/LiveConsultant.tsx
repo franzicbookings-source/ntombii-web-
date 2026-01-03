@@ -10,10 +10,18 @@ const LiveConsultant: React.FC = () => {
   const [isListening, setIsListening] = useState(false);
   
   const audioContextRef = useRef<AudioContext | null>(null);
+  const inputAudioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const sessionRef = useRef<any>(null);
   const nextStartTimeRef = useRef(0);
   const sourcesRef = useRef(new Set<AudioBufferSourceNode>());
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      stopSession();
+    };
+  }, []);
 
   const decodeAudioData = async (data: Uint8Array, ctx: AudioContext, sampleRate: number, numChannels: number): Promise<AudioBuffer> => {
     const dataInt16 = new Int16Array(data.buffer);
@@ -51,14 +59,15 @@ const LiveConsultant: React.FC = () => {
   };
 
   const startSession = async () => {
+    if (isActive || isConnecting) return;
+    
     setIsConnecting(true);
     setError(null);
 
     try {
-      // Always create a fresh instance to use the most recent API key from the dialog
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
-      const inputCtx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+      inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       
       streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
       
@@ -77,45 +86,54 @@ const LiveConsultant: React.FC = () => {
             setIsConnecting(false);
             setIsListening(true);
             
-            const source = inputCtx.createMediaStreamSource(streamRef.current!);
-            const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
-            scriptProcessor.onaudioprocess = (e) => {
-              const inputData = e.inputBuffer.getChannelData(0);
-              const base64Pcm = encodePCM(inputData);
-              sessionPromise.then(session => {
-                session.sendRealtimeInput({ media: { data: base64Pcm, mimeType: 'audio/pcm;rate=16000' } });
-              });
-            };
-            source.connect(scriptProcessor);
-            scriptProcessor.connect(inputCtx.destination);
+            if (streamRef.current && inputAudioContextRef.current) {
+              const inputCtx = inputAudioContextRef.current;
+              const source = inputCtx.createMediaStreamSource(streamRef.current);
+              const scriptProcessor = inputCtx.createScriptProcessor(4096, 1, 1);
+              scriptProcessor.onaudioprocess = (e) => {
+                const inputData = e.inputBuffer.getChannelData(0);
+                const base64Pcm = encodePCM(inputData);
+                sessionPromise.then(session => {
+                  if (session) {
+                    session.sendRealtimeInput({ media: { data: base64Pcm, mimeType: 'audio/pcm;rate=16000' } });
+                  }
+                }).catch(() => {});
+              };
+              source.connect(scriptProcessor);
+              scriptProcessor.connect(inputCtx.destination);
+            }
           },
           onmessage: async (message: LiveServerMessage) => {
             const audioData = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
-            if (audioData && audioContextRef.current) {
+            if (audioData && audioContextRef.current && audioContextRef.current.state !== 'closed') {
               const ctx = audioContextRef.current;
               nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);
-              const buffer = await decodeAudioData(decodeBase64(audioData), ctx, 24000, 1);
-              const source = ctx.createBufferSource();
-              source.buffer = buffer;
-              source.connect(ctx.destination);
-              source.start(nextStartTimeRef.current);
-              nextStartTimeRef.current += buffer.duration;
-              sourcesRef.current.add(source);
-              source.onended = () => sourcesRef.current.delete(source);
+              try {
+                const buffer = await decodeAudioData(decodeBase64(audioData), ctx, 24000, 1);
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(ctx.destination);
+                source.start(nextStartTimeRef.current);
+                nextStartTimeRef.current += buffer.duration;
+                sourcesRef.current.add(source);
+                source.onended = () => sourcesRef.current.delete(source);
+              } catch (e) {
+                console.error("Audio playback error:", e);
+              }
             }
             if (message.serverContent?.interrupted) {
-              sourcesRef.current.forEach(s => s.stop());
+              sourcesRef.current.forEach(s => {
+                try { s.stop(); } catch(e) {}
+              });
               sourcesRef.current.clear();
               nextStartTimeRef.current = 0;
             }
           },
           onerror: (e: any) => {
             console.error("Live API Error:", e);
-            if (e.message?.includes("refused to connect") || e.message?.includes("not found")) {
-              setError("Studio connection refused. Please try linking your API key again.");
-            } else {
-              setError("Network interference. Let's try again in a moment.");
-            }
+            setError(e.message?.includes("refused") || e.message?.includes("not found") 
+              ? "Studio connection refused. Please try linking your API key again." 
+              : "Network interference. Let's try again in a moment.");
             stopSession();
           },
           onclose: () => stopSession(),
@@ -124,12 +142,11 @@ const LiveConsultant: React.FC = () => {
       sessionRef.current = await sessionPromise;
     } catch (err: any) {
       console.error("Session Init Error:", err);
-      if (err.message?.includes("Permission denied")) {
-        setError("Microphone access is required for the voice session.");
-      } else {
-        setError("AI initialization failed. Check your API key status.");
-      }
+      setError(err.message?.includes("Permission denied") 
+        ? "Microphone access is required for the voice session." 
+        : "AI initialization failed. Check your API key status.");
       setIsConnecting(false);
+      stopSession();
     }
   };
 
@@ -137,9 +154,41 @@ const LiveConsultant: React.FC = () => {
     setIsActive(false);
     setIsConnecting(false);
     setIsListening(false);
-    streamRef.current?.getTracks().forEach(t => t.stop());
-    sessionRef.current?.close();
-    audioContextRef.current?.close();
+    
+    // Stop tracks
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    
+    // Close session
+    if (sessionRef.current) {
+      try { sessionRef.current.close(); } catch(e) {}
+      sessionRef.current = null;
+    }
+    
+    // Stop all playing sources
+    sourcesRef.current.forEach(s => {
+      try { s.stop(); } catch(e) {}
+    });
+    sourcesRef.current.clear();
+    nextStartTimeRef.current = 0;
+
+    // Close output context
+    if (audioContextRef.current) {
+      if (audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close().catch(console.error);
+      }
+      audioContextRef.current = null;
+    }
+
+    // Close input context
+    if (inputAudioContextRef.current) {
+      if (inputAudioContextRef.current.state !== 'closed') {
+        inputAudioContextRef.current.close().catch(console.error);
+      }
+      inputAudioContextRef.current = null;
+    }
   };
 
   const resetAuth = async () => {

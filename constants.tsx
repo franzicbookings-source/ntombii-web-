@@ -14,7 +14,9 @@ import {
   Code,
   Zap,
   CheckCircle,
-  BarChart
+  BarChart,
+  Cpu,
+  Bot
 } from 'lucide-react';
 import { Service, Project, Testimonial, PricingTier } from './types';
 
@@ -44,12 +46,12 @@ export const CORE_SERVICES: Service[] = [
     startingPrice: 'R30,000'
   },
   {
-    id: 'custom-tools',
-    title: 'Custom Business Tools',
-    description: 'Automate workflows and solve specific problems with proprietary software solutions.',
-    icon: 'Wrench',
+    id: 'automation',
+    title: 'AI & Workflow Automation',
+    description: 'Eliminate manual tasks with custom AI agents, API integrations, and automated business workflows.',
+    icon: 'Bot',
     category: 'core',
-    startingPrice: 'R3,000'
+    startingPrice: 'R5,000'
   }
 ];
 
@@ -116,12 +118,12 @@ export const PRICING_TIERS: PricingTier[] = [
   {
     id: 'growth',
     name: 'Professional',
-    setupPrice: 'R7,500',
-    monthlyPrice: 'R1,250',
-    description: 'For growing businesses requiring active content and better rankings.',
+    setupPrice: 'R12,500',
+    monthlyPrice: 'R1,850',
+    description: 'For growing businesses requiring active content and basic automation.',
     features: [
       'Advanced CMS Integration',
-      'Premium Content Management',
+      'Basic Workflow Automation (Zapier/Make)',
       '5 Professional Email Accounts',
       'Bi-Weekly Content Updates',
       'Rank-Focused SEO Strategy',
@@ -137,8 +139,8 @@ export const PRICING_TIERS: PricingTier[] = [
     description: 'High-scale apps and enterprise tools with dedicated management.',
     features: [
       'Bespoke Web App / Native App',
+      'Custom AI Agent & Full Automation',
       'Unlimited Content Management',
-      'Dedicated Email Infrastructure',
       '24/7 Security Monitoring',
       'Weekly SEO Performance Reports',
       'Custom Tool Automations'
@@ -222,5 +224,7 @@ export const ICON_MAP: Record<string, React.ReactNode> = {
   Code: <Code className="w-6 h-6" />,
   Zap: <Zap className="w-6 h-6" />,
   CheckCircle: <CheckCircle className="w-6 h-6" />,
-  BarChart: <BarChart className="w-6 h-6" />
+  BarChart: <BarChart className="w-6 h-6" />,
+  Cpu: <Cpu className="w-6 h-6" />,
+  Bot: <Bot className="w-6 h-6" />
 };
