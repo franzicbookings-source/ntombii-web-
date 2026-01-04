@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, MessageSquare, ArrowRight, Sparkles, CheckCircle, Globe, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import SEO from '../components/SEO';
+import VoiceInput from '../components/VoiceInput';
 
 const Contact: React.FC = () => {
   const [formState, setFormState] = useState({
@@ -15,7 +17,6 @@ const Contact: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Mock submission delay
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSent(true);
@@ -23,18 +24,29 @@ const Contact: React.FC = () => {
     }, 1500);
   };
 
+  const handleVoiceTranscript = (transcript: string) => {
+    setFormState(prev => ({
+      ...prev,
+      message: prev.message ? `${prev.message} ${transcript}` : transcript
+    }));
+  };
+
   const contactItems = [
-    { icon: <Mail className="w-5 h-5" />, label: "Email Us", value: "hello@ntombiicomm.co.za", link: "mailto:hello@ntombiicomm.co.za" },
-    { icon: <Phone className="w-5 h-5" />, label: "Phone", value: "+27 (0) 11 463 0000", link: "tel:+27114630000" },
+    { icon: <Mail className="w-5 h-5" />, label: "Email Us", value: "info@ntombiitech.co.za", link: "mailto:info@ntombiitech.co.za" },
+    { icon: <Phone className="w-5 h-5" />, label: "Phone", value: "081 236 0230", link: "tel:0812360230" },
     { icon: <MapPin className="w-5 h-5" />, label: "Studio", value: "Newcastle, KZN, South Africa", link: "#" }
   ];
 
   return (
     <div className="pt-28 md:pt-40 pb-20 px-4 min-h-screen">
+      <SEO 
+        title="Contact Us | NTOMBII TECH - Start Your Project"
+        description="Ready to launch? Deploy your digital request to NTOMBII TECH. We respond within 24 hours to all business inquiries in Newcastle and KZN."
+        keywords="contact digital agency KZN, hire web developer Newcastle, business discovery call, NTOMBII contact"
+      />
       <div className="container mx-auto max-w-6xl">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
           
-          {/* Left Column: Info */}
           <div className="space-y-12 md:space-y-20">
             <div>
               <div className="inline-flex items-center space-x-2 px-3 py-1 bg-blue-600/10 border border-blue-500/20 rounded-full mb-6">
@@ -74,7 +86,6 @@ const Contact: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Form */}
           <div className="relative">
             <div className="blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
             
@@ -139,7 +150,10 @@ const Contact: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Message / Requirements</label>
+                    <div className="flex justify-between items-end">
+                      <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Message / Requirements</label>
+                      <VoiceInput onTranscript={handleVoiceTranscript} className="mb-1 w-8 h-8" size={14} />
+                    </div>
                     <textarea 
                       required
                       rows={4}
@@ -157,15 +171,10 @@ const Contact: React.FC = () => {
                     <span>{isSubmitting ? 'Processing...' : 'Deploy Request'}</span>
                     <Send className={`w-4 h-4 ${isSubmitting ? 'animate-pulse' : ''}`} />
                   </button>
-                  
-                  <p className="text-[9px] text-slate-600 font-black uppercase tracking-widest text-center mt-6">
-                    By submitting, you agree to our 24h response standard.
-                  </p>
                 </form>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>

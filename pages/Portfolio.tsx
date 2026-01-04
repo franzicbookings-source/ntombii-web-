@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { PROJECTS } from '../constants';
 import ProjectCard from '../components/ProjectCard';
 import { ChevronDown, ChevronUp, CheckCircle, Cpu, FileText } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Portfolio: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -13,6 +14,11 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className="pt-24 md:pt-32 pb-16 md:pb-24 text-slate-200">
+      <SEO 
+        title="Portfolio | NTOMBII TECH - Flagship Digital Projects"
+        description="Explore the initial artifacts and foundational projects built by NTOMBII TECH. Native apps, directory hubs, and soulful music festival platforms."
+        keywords="Newcastle portfolio, web projects KZN, TholaOnline case study, RnB Soulful Groove Gathering website"
+      />
       {/* Header */}
       <section className="container mx-auto max-w-6xl px-4 md:px-6 mb-12 md:mb-20 text-center">
         <h2 className="text-blue-500 font-black text-[10px] md:text-sm uppercase tracking-[0.3em] mb-4">The Launch Collection</h2>
@@ -64,11 +70,9 @@ const Portfolio: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Expanded Section - Highly responsive layout */}
                 {isExpanded && project.caseStudy && (
                   <div className="pt-8 md:pt-16 border-t border-white/10 animate-in fade-in slide-in-from-top-4 duration-500">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 sm:gap-10 lg:gap-12">
-                      {/* Challenge Section */}
                       <div className="space-y-4 md:space-y-6">
                         <h4 className="text-blue-500 font-black text-[10px] uppercase tracking-widest flex items-center">
                           <span className="w-6 h-px bg-blue-500/30 mr-3"></span>
@@ -79,7 +83,6 @@ const Portfolio: React.FC = () => {
                         </p>
                       </div>
 
-                      {/* Solution Section */}
                       <div className="space-y-4 md:space-y-6 border-t sm:border-t-0 border-white/5 pt-8 sm:pt-0">
                         <h4 className="text-blue-500 font-black text-[10px] uppercase tracking-widest flex items-center">
                           <span className="w-6 h-px bg-blue-500/30 mr-3"></span>
@@ -90,7 +93,6 @@ const Portfolio: React.FC = () => {
                         </p>
                       </div>
 
-                      {/* Results Section */}
                       <div className="space-y-4 md:space-y-6 border-t lg:border-t-0 border-white/5 pt-8 lg:pt-0 sm:col-span-2 lg:col-span-1">
                         <h4 className="text-blue-500 font-black text-[10px] uppercase tracking-widest flex items-center">
                           <span className="w-6 h-px bg-blue-500/30 mr-3"></span>
@@ -107,7 +109,6 @@ const Portfolio: React.FC = () => {
                       </div>
                     </div>
                     
-                    {/* Tech Stack Horizontal List */}
                     <div className="mt-12 md:mt-16 p-5 md:p-8 bg-white/[0.03] rounded-3xl border border-white/5 flex flex-col sm:flex-row items-start sm:items-center gap-6">
                        <div className="flex items-center space-x-3 shrink-0">
                           <div className="w-8 h-8 bg-blue-600/20 text-blue-500 rounded-lg flex items-center justify-center">

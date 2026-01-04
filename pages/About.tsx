@@ -3,10 +3,16 @@ import React from 'react';
 import { Target, Lightbulb, Users, Award, Rocket, Zap, ShieldCheck, Heart, Code2, Flame, FastForward, CheckCircle2, RefreshCcw, Layers, Scale, Coffee, Sparkles } from 'lucide-react';
 import NewcastleMap from '../components/NewcastleMap';
 import LiveConsultant from '../components/LiveConsultant';
+import SEO from '../components/SEO';
 
 const About: React.FC = () => {
   return (
     <div className="pt-24 md:pt-32 pb-20 px-4 text-slate-200">
+      <SEO 
+        title="About Us | NTOMBII TECH - The Next Generation Digital Agency"
+        description="Learn about the founders behind NTOMBII TECH in Newcastle, KZN. We leverage zero legacy debt and modern tech stacks to build future-ready digital experiences."
+        keywords="Sthembile Ndlovu founder, digital studio Newcastle, Newcastle KZN tech, modern web agency South Africa"
+      />
       {/* Story Section */}
       <section className="container mx-auto max-w-6xl mb-16 md:mb-32">
         <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -16,7 +22,7 @@ const About: React.FC = () => {
               New Generation. <br className="hidden md:block" /><span className="text-gradient">No Legacy Baggage.</span>
             </h1>
             <p className="text-sm md:text-xl text-slate-400 mb-6 leading-relaxed font-medium">
-              We aren't an agency with 20 years of "old-school" history. We are a fresh generation of builders in Newcastle, KZN, who started NTOMBII COMM to escape the slow, bloated patterns of the past. 
+              We aren't an agency with 20 years of "old-school" history. We are a fresh generation of builders in Newcastle, KZN, who started NTOMBII TECH to escape the slow, bloated patterns of the past. 
             </p>
             <p className="text-xs md:text-lg text-slate-500 leading-relaxed font-medium">
               Our lack of a long history is our greatest asset. It means we don't have outdated templates, we don't use yesterday's tools, and we have a level of hunger that a legacy firm can't match.
@@ -42,7 +48,6 @@ const About: React.FC = () => {
                 </p>
               </div>
             </div>
-            {/* Background decorative blob */}
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-[80px] -z-10"></div>
           </div>
         </div>

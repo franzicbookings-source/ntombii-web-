@@ -3,12 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Loader2, Sparkles, Zap, ExternalLink } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import { Link } from 'react-router-dom';
+import VoiceInput from './VoiceInput';
 
 const GeminiChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; text: string }[]>([
-    { role: 'assistant', text: "Hello! I'm the NTOMBII COMM strategist. I can help you with details on our build packages, managed services, or our roadmap. What's on your mind?" }
+    { role: 'assistant', text: "Hello! I'm the NTOMBII TECH strategist. I can help you with details on our build packages, managed services, or our roadmap. What's on your mind?" }
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -41,10 +42,10 @@ const GeminiChat: React.FC = () => {
         model: 'gemini-3-flash-preview',
         contents: userMessage,
         config: {
-          systemInstruction: `You are the official AI representative for NTOMBII COMM, a premium digital tech agency based in Newcastle, KwaZulu-Natal.
+          systemInstruction: `You are the official AI representative for NTOMBII TECH, a premium digital tech agency based in Newcastle, KwaZulu-Natal.
           
           IDENTITY & STATUS:
-          - Agency Name: NTOMBII COMM.
+          - Agency Name: NTOMBII TECH.
           - Founders: Sthembile Ndlovu (Founder & CEO) and Sabelo Ndlovu (Chief Creative Officer & Founder).
           - Vibe: Fresh energy, high-intensity, boutique, founder-led.
           - LOCATION: Newcastle, KZN. Always state this if asked.
@@ -56,7 +57,7 @@ const GeminiChat: React.FC = () => {
 
           SERVICES & PRICING:
           1. Essential (Starter): R2,500 build + R499/mo management. (Best for simple professional presence).
-          2. Professional (Growth): R7,500 build + R1,250/mo management. (Best for active SEO and content).
+          2. Professional (Growth): R12,500 build + R1,850/mo management. (Best for active SEO and content).
           3. Custom Studio (Enterprise): R25,000+ build + R3,500/mo management. (Best for apps and complex tools).
           
           MANAGEMENT DETAILS (Crucial selling point):
@@ -68,7 +69,7 @@ const GeminiChat: React.FC = () => {
           GUIDELINES:
           - Be punchy, professional, and slightly bold.
           - If the user seems interested in a specific tier, explain WHY it fits (e.g., "Essential is perfect for getting you online fast with zero maintenance stress").
-          - NEVER give generic advice; pivot every conversation toward NTOMBII COMM's specific offerings.
+          - NEVER give generic advice; pivot every conversation toward NTOMBII TECH's specific offerings.
           - Keep responses under 3 concise sentences.`,
         },
       });
@@ -81,6 +82,10 @@ const GeminiChat: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleVoiceTranscript = (transcript: string) => {
+    setInput(prev => (prev ? `${prev} ${transcript}` : transcript));
   };
 
   return (
@@ -162,7 +167,8 @@ const GeminiChat: React.FC = () => {
               ))}
             </div>
 
-            <div className="relative flex items-center bg-white/5 rounded-2xl border border-white/10 focus-within:border-blue-500 transition-all px-4 py-1.5">
+            <div className="relative flex items-center bg-white/5 rounded-2xl border border-white/10 focus-within:border-blue-500 transition-all px-4 py-1.5 gap-2">
+              <VoiceInput onTranscript={handleVoiceTranscript} className="w-10 h-10 shrink-0" />
               <input
                 type="text"
                 value={input}
@@ -174,7 +180,7 @@ const GeminiChat: React.FC = () => {
               <button
                 onClick={() => handleSend()}
                 disabled={isLoading || !input.trim()}
-                className={`p-2.5 rounded-xl transition-all ${
+                className={`p-2.5 rounded-xl transition-all shrink-0 ${
                   isLoading || !input.trim() ? 'text-slate-700' : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20'
                 }`}
               >

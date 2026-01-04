@@ -2,10 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Ghost, Home, ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const NotFound: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-6">
+      <SEO title="404 Not Found | NTOMBII TECH" />
       <div className="text-center">
         <div className="relative inline-block mb-12">
           <div className="absolute inset-0 bg-blue-600 blur-[80px] opacity-20"></div>

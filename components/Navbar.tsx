@@ -38,7 +38,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
           <span className="text-base md:text-xl font-black tracking-tighter text-white">
-            NTOMBII<span className="text-blue-400">COMM</span>
+            NTOMBII<span className="text-blue-400">TECH</span>
           </span>
         </Link>
 
